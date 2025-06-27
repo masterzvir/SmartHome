@@ -1,3 +1,5 @@
+# Перевірка версії Пітона (python --version => Python 3.13.2)
+
 # Час
 tгод = 1  # Одна година
 print("t =", tгод, "годин")  # Візуалізація годин
@@ -139,7 +141,26 @@ print("Eдім",Eдім)  # Візуалізація енергії дому
 Tдім = Eдім * 100  # Температура дому, градусів C
 print("Tдім =",Tдім, "С")  # Візуалізація температури радіатора
 
+
 # Вікно
 # Датчики температур в вигляді повзунка
 # Сумарні енергії в вигляді стовбчиків
 # Графіки зміни температур і енегрій
+
+# Встановлення бібліотеки (pip install dearpygui => 25.1.1)
+
+import dearpygui.dearpygui as dpg
+
+dpg.create_context()
+
+with dpg.window(label="SmartHome"):
+    dpg.add_text("Detek")
+    dpg.add_button(label="Save")
+    dpg.add_input_text(label="txt", default_value="Data")
+    dpg.add_slider_float(label="Temperatur", default_value=0.1, max_value=1)
+
+dpg.create_viewport(title='Custom Title', width=600, height=200)
+dpg.setup_dearpygui()
+dpg.show_viewport()
+dpg.start_dearpygui()
+dpg.destroy_context()
