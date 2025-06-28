@@ -147,8 +147,34 @@ print("Tдім =",Tдім, "С")  # Візуалізація температу�
 # Сумарні енергії в вигляді стовбчиків
 # Графіки зміни температур і енегрій
 
-# Встановлення бібліотеки (pip install dearpygui => 25.1.1)
+# Встановлення бібліотеки (pip install dearpygui)
+# >>> import importlib.metadata
+# >>> print(importlib.metadata.version("dearpygui"))
+# >>> 2.0.0
 
+import dearpygui.dearpygui as dpg
+
+dpg.create_context()
+dpg.create_viewport(title="Інтерфейс зі шрифтом", width=600, height=300)
+
+# 🔤 Реєстрація шрифту
+with dpg.font_registry():
+    default_font = dpg.add_font("C:/Smart_Home/Noto_Sans/static/NotoSans-Regular.ttf", 20)
+
+# 🪟 Вікно
+with dpg.window(label="Привіт, світ"):
+    dpg.add_text("Тест українського тексту", tag="my_text")
+    dpg.add_button(label="Кнопка")
+
+dpg.bind_font(default_font)  # 🎯 Прив'язка шрифту до інтерфейсу
+
+dpg.setup_dearpygui()
+dpg.show_viewport()
+dpg.start_dearpygui()
+dpg.destroy_context()
+
+
+"""
 import dearpygui.dearpygui as dpg
 
 dpg.create_context()
@@ -164,3 +190,4 @@ dpg.setup_dearpygui()
 dpg.show_viewport()
 dpg.start_dearpygui()
 dpg.destroy_context()
+"""
