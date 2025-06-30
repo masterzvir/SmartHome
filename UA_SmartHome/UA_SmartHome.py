@@ -1,5 +1,3 @@
-"""
-
 # Перевірка версії Пітона (python --version => Python 3.13.2)
 
 # Час
@@ -153,12 +151,11 @@ print("Tдім =",Tдім, "С")  # Візуалізація температу�
 # >>> import importlib.metadata
 # >>> print(importlib.metadata.version("dearpygui"))
 # >>> 2.0.0
-"""
 
 import dearpygui.dearpygui as dpg
 
 dpg.create_context()
-dpg.create_viewport(title=' Dear PyGui', width=800, height=600)
+dpg.create_viewport(title='Smart Home', width=550, height=450)
 
 with dpg.font_registry():
     # Шлях до вашого шрифту. Змініть його на реальний шлях.
@@ -191,38 +188,20 @@ with dpg.font_registry():
         print(f"Виникла помилка під час завантаження шрифту: {e}")
         print("Текст може відображатися некоректно без правильного шрифту.")
 
-
 # Створюємо вікно та додаємо віджети з українським текстом
-with dpg.window(label="Приклад українською мовою", width=400, height=300):
-    dpg.add_text("Привіт, світ!")
-    dpg.add_button(label="Натисніть мене")
-    dpg.add_checkbox(label="Увімкнути опцію")
-    dpg.add_input_text(label="Введіть ваше ім'я:", default_value="Іван")
-    dpg.add_slider_int(label="Виберіть значення:", min_value=0, max_value=100)
-    dpg.add_text("Це текст українською мовою.")
-    dpg.add_text("Використання кирилиці в Dear PyGui.")
-    dpg.add_text("А також символ Ї, що є унікальним для української мови.")
-
-
+with dpg.window(label="Датчики температури", width=500, height=400):
+    dpg.add_text("Температура зовні")
+    dpg.add_slider_int(label="градусів С", min_value=-100, max_value=100)
+    dpg.add_text("Температура сонячного колектора")
+    dpg.add_slider_int(label="градусів С", min_value=0, max_value=100)
+    dpg.add_text("Температура бака")
+    dpg.add_slider_int(label="градусів С", min_value=0, max_value=100)
+    dpg.add_text("Температура радіатора")
+    dpg.add_slider_int(label="градусів С", min_value=0, max_value=100)
+    dpg.add_text("Температура будинку")
+    dpg.add_slider_int(label="градусів С", min_value=0, max_value=100)
+    
 dpg.setup_dearpygui()
 dpg.show_viewport()
 dpg.start_dearpygui()
 dpg.destroy_context()
-
-"""
-import dearpygui.dearpygui as dpg
-
-dpg.create_context()
-
-with dpg.window(label="SmartHome"):
-    dpg.add_text("Detek")
-    dpg.add_button(label="Save")
-    dpg.add_input_text(label="txt", default_value="Data")
-    dpg.add_slider_float(label="Temperatur", default_value=0.1, max_value=1)
-
-dpg.create_viewport(title='Custom Title', width=600, height=200)
-dpg.setup_dearpygui()
-dpg.show_viewport()
-dpg.start_dearpygui()
-dpg.destroy_context()
-"""
