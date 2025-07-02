@@ -1,3 +1,5 @@
+"""
+
 # Перевірка версії Пітона (python --version => Python 3.13.2)
 
 # Час
@@ -238,4 +240,119 @@ dpg.show_viewport()
 # Запуск головного циклу Dear PyGui
 dpg.start_dearpygui()
 # Знищення контексту Dear PyGui після завершення роботи
+dpg.destroy_context()
+
+"""
+import dearpygui.dearpygui as dpg
+import time
+
+# --- ГЛОБАЛЬНІ ЗМІННІ ДЛЯ ЗБЕРІГАННЯ ДАНИХ ДАТЧИКІВ ТА ГРАФІКІВ ---
+sensor_data = {
+    "Зовні": {'values': [], 'time_points': [], 'max_history': 50},
+    "Сонячний колектор": {'values': [], 'time_points': [], 'max_history': 50},
+    "Бак": {'values': [], 'time_points': [], 'max_history': 50},
+    "Радіатор": {'values': [], 'time_points': [], 'max_history': 50},
+    "Будинок": {'values': [], 'time_points': [], 'max_history': 50},
+}
+
+# --- ФУНКЦІЇ ЗВОРОТНОГО ВИКЛИКУ ДЛЯ ПОВЗУНКІВ ТА ОНОВЛЕННЯ ГРАФІКІВ ---
+def update_plot(sender, app_data, user_data):
+    sensor_name = user_data['name']
+    plot_series_tag = user_data['series_tag']
+    
+    current_data = sensor_data[sensor_name]
+    
+    current_data['values'].append(app_data)
+    current_data['time_points'].append(len(current_data['values']) - 1)
+
+    if len(current_data['values']) > current_data['max_history']:
+        current_data['values'].pop(0)
+        current_data['time_points'].pop(0)
+        current_data['time_points'] = [i for i in range(len(current_data['values']))]
+
+    dpg.set_value(plot_series_tag, [list(current_data['time_points']), list(current_data['values'])])
+
+    dpg.fit_axis_data(f"{sensor_name}_x_axis")
+    dpg.fit_axis_data(f"{sensor_name}_y_axis")
+
+
+# --- НАЛАШТУВАННЯ DEAR PYGUI ---
+dpg.create_context()
+# Збільшуємо ширину та висоту вікна перегляду, щоб вмістити вертикальні повзунки та графіки
+dpg.create_viewport(title='Smart Home - Датчики та Графіки', width=1200, height=800)
+
+# --- НАЛАШТУВАННЯ ШРИФТІВ ---
+with dpg.font_registry():
+    font_path = "C:/Windows/Fonts/Arial.ttf" # Приклад для Windows
+    try:
+        with dpg.font(font_path, 20) as default_font:
+            dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
+            dpg.add_font_range_hint(dpg.mvFontRangeHint_Default)
+        dpg.bind_font(default_font)
+    except FileNotFoundError:
+        print(f"Помилка: Файл шрифту не знайдено за шляхом: {font_path}")
+        print("Будь ласка, перевірте шлях або використовуйте інший шрифт.")
+        print("Текст може відображатися некоректно без правильного шрифту.")
+    except Exception as e:
+        print(f"Виникла помилка під час завантаження шрифту: {e}")
+        print("Текст може відображатися некоректно без правильного шрифту.")
+
+# --- СТВОРЕННЯ ВІКНА ДАТЧИКІВ ТА ЇХНІХ ПОВЗУНКІВ ---
+# Розташовуємо вікно з повзунками ліворуч, збільшуємо висоту для вертикальних повзунків
+with dpg.window(label="Панель керування датчиками", width=450, height=700, pos=[0,0]): # Змінив ширину
+    # Головна горизонтальна група для розміщення всіх колонок датчиків поруч
+    with dpg.group(horizontal=True):
+        sensor_configs = [
+            ("Зовні", -100, 100),
+            ("Сонячний колектор", 0, 100),
+            ("Бак", 0, 100),
+            ("Радіатор", 0, 100),
+            ("Будинок", 0, 100),
+        ]
+
+        for name, min_val, max_val in sensor_configs:
+            # Кожна колонка (підпис + вертикальний повзунок) буде в окремій вертикальній групі
+            with dpg.group():
+                dpg.add_text(name) # Підпис датчика
+                
+                slider_tag = f"{name}_slider"
+                series_tag = f"{name}_series" 
+                
+                # Повзунок тепер вертикальний
+                dpg.add_slider_int(
+                    label="град. С", # Це лейбл поруч зі значенням повзунка
+                    min_value=min_val,
+                    max_value=max_val,
+                    vertical=True, # Встановлюємо вертикальний напрямок
+                    width=20,      # Ширина вертикального повзунка
+                    height=250,    # Висота вертикального повзунка
+                    tag=slider_tag,
+                    callback=update_plot,
+                    user_data={'name': name, 'series_tag': series_tag}
+                )
+            # Додаємо простір між колонками повзунків
+            dpg.add_spacer(width=30) 
+
+# --- СТВОРЕННЯ ОКРЕМОГО ВІКНА ДЛЯ ГРАФІКІВ ---
+# Розташовуємо вікно з графіками праворуч від вікна повзунків
+with dpg.window(label="Графіки зміни температури", width=750, height=700, pos=[470,0]): # Змінив pos, щоб не накладалось
+    for name, _, _ in sensor_configs:
+        plot_tag = f"{name}_plot"
+        series_tag = f"{name}_series"
+        x_axis_tag = f"{name}_x_axis"
+        y_axis_tag = f"{name}_y_axis"
+
+        with dpg.plot(label=f"Графік: {name}", height=120, width=-1, tag=plot_tag): # width=-1 for fill parent width
+            dpg.add_plot_axis(dpg.mvXAxis, label="Точки часу", tag=x_axis_tag)
+            dpg.add_plot_axis(dpg.mvYAxis, label="Температура, °C", tag=y_axis_tag)
+            
+            dpg.add_line_series([], [], parent=y_axis_tag, tag=series_tag)
+            
+        dpg.add_spacer(height=10) # Відступ між графіками
+
+
+# --- ЗАПУСК ДОДАТКУ ---
+dpg.setup_dearpygui()
+dpg.show_viewport()
+dpg.start_dearpygui()
 dpg.destroy_context()
