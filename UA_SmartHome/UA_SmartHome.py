@@ -279,7 +279,7 @@ def update_plot(sender, app_data, user_data):
 # --- НАЛАШТУВАННЯ DEAR PYGUI ---
 dpg.create_context()
 # Збільшуємо ширину та висоту вікна перегляду, щоб вмістити вертикальні повзунки та графіки
-dpg.create_viewport(title='Smart Home - Датчики та Графіки', width=1200, height=800)
+dpg.create_viewport(title='Smart Home - Датчики та Графіки', width=1300, height=900)
 
 # --- НАЛАШТУВАННЯ ШРИФТІВ ---
 with dpg.font_registry():
@@ -299,7 +299,7 @@ with dpg.font_registry():
 
 # --- СТВОРЕННЯ ВІКНА ДАТЧИКІВ ТА ЇХНІХ ПОВЗУНКІВ ---
 # Розташовуємо вікно з повзунками ліворуч, збільшуємо висоту для вертикальних повзунків
-with dpg.window(label="Панель керування датчиками", width=450, height=700, pos=[0,0]): # Змінив ширину
+with dpg.window(label="Панель керування датчиками", width=800, height=700, pos=[0,0]): # Змінив ширину
     # Головна горизонтальна група для розміщення всіх колонок датчиків поруч
     with dpg.group(horizontal=True):
         sensor_configs = [
@@ -331,7 +331,7 @@ with dpg.window(label="Панель керування датчиками", widt
                     user_data={'name': name, 'series_tag': series_tag}
                 )
             # Додаємо простір між колонками повзунків
-            dpg.add_spacer(width=30) 
+            dpg.add_spacer(width=5) 
 
 # --- СТВОРЕННЯ ОКРЕМОГО ВІКНА ДЛЯ ГРАФІКІВ ---
 # Розташовуємо вікно з графіками праворуч від вікна повзунків
@@ -356,5 +356,3 @@ dpg.setup_dearpygui()
 dpg.show_viewport()
 dpg.start_dearpygui()
 dpg.destroy_context()
-
-# Сьогодні в мене День Народження, тому за сьогодні зроблено нічого)
