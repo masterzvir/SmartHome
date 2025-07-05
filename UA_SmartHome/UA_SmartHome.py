@@ -279,13 +279,13 @@ def update_plot(sender, app_data, user_data):
 # --- НАЛАШТУВАННЯ DEAR PYGUI ---
 dpg.create_context()
 # Збільшуємо ширину та висоту вікна перегляду, щоб вмістити вертикальні повзунки та графіки
-dpg.create_viewport(title='Smart Home - Датчики та Графіки', width=1300, height=900)
+dpg.create_viewport(title='Smart Home - Датчики та Графіки', width=1200, height=800)
 
 # --- НАЛАШТУВАННЯ ШРИФТІВ ---
 with dpg.font_registry():
     font_path = "C:/Windows/Fonts/Arial.ttf" # Приклад для Windows
     try:
-        with dpg.font(font_path, 20) as default_font:
+        with dpg.font(font_path, 10) as default_font:
             dpg.add_font_range_hint(dpg.mvFontRangeHint_Cyrillic)
             dpg.add_font_range_hint(dpg.mvFontRangeHint_Default)
         dpg.bind_font(default_font)
@@ -335,7 +335,7 @@ with dpg.window(label="Панель керування датчиками", widt
 
 # --- СТВОРЕННЯ ОКРЕМОГО ВІКНА ДЛЯ ГРАФІКІВ ---
 # Розташовуємо вікно з графіками праворуч від вікна повзунків
-with dpg.window(label="Графіки зміни температури", width=750, height=700, pos=[470,0]): # Змінив pos, щоб не накладалось
+with dpg.window(label="Графіки зміни температури", width=700, height=700, pos=[470,0]): # Змінив pos, щоб не накладалось
     for name, _, _ in sensor_configs:
         plot_tag = f"{name}_plot"
         series_tag = f"{name}_series"
